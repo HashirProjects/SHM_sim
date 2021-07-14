@@ -3,6 +3,7 @@ import numpy as np
 import math
 import time
 import numba
+from statistics import mean
 
 class sim():
 	def __init__(self,mass,springConstant,displacementOfSpring,damping = 0.99,initialVelocity = 0):
@@ -12,16 +13,17 @@ class sim():
 		self.v = initialVelocity
 		self.ke = (1/2)*(initialVelocity^2)*self.mass
 		self.time=0
+		self.dt=0.0001
 		self.changeInHeight=0
 		self.damping = damping
 
-	def simulate(self,time = 0.0001):#simulate the velocity of the particle after small amount of time specifed, retains the conditions from the prior simulation
+	def simulate(self):#simulate the velocity of the particle after small amount of time specifed, retains the conditions from the prior simulation
 
 		a=(self.mass*9.81 - self.displacement*self.springConstant)/self.mass
 
-		self.displacement += self.v*time + (1/2)*a*time*time
-		self.v += a*time
-		self.time+= time
+		self.displacement += self.v*self.dt + (1/2)*a*self.dt*self.dt
+		self.v += a*self.dt
+		self.time+= self.dt
 		self.v = self.v*self.damping
 
 def timefunc(func):
@@ -59,4 +61,24 @@ def findCritDamp():
 	plt.plot(dampings, times)
 	plt.show()
 
-timefunc(findCritDamp)()
+def plotV():
+
+	system=sim(1,1,100, damping = 0.999999)
+	dataT =[]
+	dataV =[]
+
+	while True:
+
+		system.simulate()
+		dataV.append(system.v)
+		dataT.append(system.time)
+
+		if len(dataV) > 100:
+			if (sum(map(abs, dataV[-100:]))) < 0.1:
+				break
+
+	return dataT, dataV
+	
+dataT, dataV = timefunc(plotV)()
+plt.plot(dataT, dataV)
+plt.show()
