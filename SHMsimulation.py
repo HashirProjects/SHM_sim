@@ -23,6 +23,7 @@ class sim():
 
 		self.displacement += self.v*self.dt + (1/2)*a*self.dt*self.dt
 		self.v += a*self.dt
+
 		self.time+= self.dt
 		self.v = self.v*self.damping
 
@@ -38,19 +39,27 @@ def timefunc(func):
 def main(*arg, **kwargs):
 
 	system=sim(*arg, **kwargs)
+	dataV =np.ones(100)
+	counter = 0
 
 	while True:
+
 		system.simulate()
-		if abs(system.v) < 0.0001:
+		dataV[counter%100]=system.v
+
+		if (sum(np.abs(dataV))) < 0.1:
 			break
 
+		counter +=1
+
 	print(system.time)
+
 	return system.time
 		
 
 def findCritDamp():
 
-	dampings = np.arange(1,0.9999, -0.000001)
+	dampings = np.arange(0.99999,0.999, -0.0001)
 	print(dampings)
 	times = []
 
@@ -63,7 +72,7 @@ def findCritDamp():
 
 def plotV():
 
-	system=sim(1,1,100, damping = 0.999999)
+	system=sim(1,1,100, damping = 0.99989)
 	dataT =[]
 	dataV =[]
 
@@ -77,8 +86,7 @@ def plotV():
 			if (sum(map(abs, dataV[-100:]))) < 0.1:
 				break
 
-	return dataT, dataV
+	plt.plot(dataT,dataV)
+	plt.show()
 	
-dataT, dataV = timefunc(plotV)()
-plt.plot(dataT, dataV)
-plt.show()
+timefunc(plotV)()
