@@ -47,7 +47,7 @@ def main(*arg, **kwargs):
 		system.simulate()
 		dataV[counter%100]=system.v
 
-		if (sum(np.abs(dataV))) < 0.1:
+		if (np.sum(np.abs(dataV))) < 0.1:
 			break
 
 		counter +=1
@@ -59,7 +59,7 @@ def main(*arg, **kwargs):
 
 def findCritDamp():
 
-	dampings = np.arange(0.99999,0.999, -0.0001)
+	dampings = np.arange(0.99999,0.99979, -0.00001)
 	print(dampings)
 	times = []
 
@@ -67,8 +67,7 @@ def findCritDamp():
 	for damp in dampings:
 		times.append(main(1,1,100, damping = damp))
 
-	plt.plot(dampings, times)
-	plt.show()
+	return dampings, times
 
 def plotV():
 
@@ -86,7 +85,8 @@ def plotV():
 			if (sum(map(abs, dataV[-100:]))) < 0.1:
 				break
 
-	plt.plot(dataT,dataV)
-	plt.show()
+	return dataT, dataV
 	
-timefunc(plotV)()
+X, Y=timefunc(findCritDamp)()
+plt.plot(X,Y)
+plt.show()
