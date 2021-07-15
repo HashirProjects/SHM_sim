@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 import time
-import numba
 from statistics import mean
 
 class sim():
@@ -11,10 +10,8 @@ class sim():
 		self.springConstant=springConstant
 		self.displacement=displacementOfSpring
 		self.v = initialVelocity
-		self.ke = (1/2)*(initialVelocity^2)*self.mass
 		self.time=0
 		self.dt=0.0001
-		self.changeInHeight=0
 		self.damping = damping
 
 	def simulate(self):#simulate the velocity of the particle after small amount of time specifed, retains the conditions from the prior simulation
@@ -59,7 +56,7 @@ def main(*arg, **kwargs):
 
 def findCritDamp():
 
-	dampings = np.arange(0.99999,0.99979, -0.00001)
+	dampings = np.arange(0.999827,0.999825, -0.0000001)
 	print(dampings)
 	times = []
 
